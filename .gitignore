@@ -3,6 +3,7 @@ node_modules/
 
 # Build output
 dist/
+*.tsbuildinfo
 
 # Environment variables
 .env
@@ -10,6 +11,7 @@ dist/
 .env.*.local
 
 # Convex generated files
+src/component/_generated/
 example/convex/_generated/
 
 # IDE

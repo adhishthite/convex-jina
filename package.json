@@ -1,0 +1,86 @@
+{
+	"name": "convex-jina",
+	"version": "0.1.0",
+	"description": "Convex component wrapping Jina AI Reader and Search APIs with durable caching and reactive queries",
+	"license": "Apache-2.0",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/adhishthite/convex-jina"
+	},
+	"keywords": [
+		"convex",
+		"component",
+		"jina",
+		"reader",
+		"search",
+		"web-scraping",
+		"markdown",
+		"llm",
+		"ai",
+		"rag",
+		"third-party-sync"
+	],
+	"type": "module",
+	"scripts": {
+		"dev": "run-p -r 'dev:*'",
+		"dev:backend": "convex dev --typecheck-components",
+		"dev:frontend": "cd example && vite --clearScreen false",
+		"dev:build": "chokidar 'tsconfig*.json' 'src/**/*.ts' -i '**/*.test.ts' -c 'bun run build:codegen' --initial",
+		"predev": "path-exists .env.local dist || (bun run build && convex dev --once)",
+		"build": "tsc --project ./tsconfig.build.json",
+		"build:codegen": "bunx convex codegen --component-dir ./src/component && bun run build",
+		"build:clean": "rm -rf dist *.tsbuildinfo && bun run build:codegen",
+		"typecheck": "tsc --noEmit",
+		"format": "biome format --write .",
+		"lint": "biome check --fix .",
+		"check": "biome check --fix . && tsc --noEmit",
+		"test": "vitest run --typecheck",
+		"prepublishOnly": "bun run build:clean",
+		"release": "bun version patch && bun publish && git push --follow-tags"
+	},
+	"files": [
+		"dist",
+		"src"
+	],
+	"exports": {
+		"./package.json": "./package.json",
+		".": {
+			"types": "./dist/client/index.d.ts",
+			"default": "./dist/client/index.js"
+		},
+		"./react": {
+			"types": "./dist/react/index.d.ts",
+			"default": "./dist/react/index.js"
+		},
+		"./test": "./src/test.ts",
+		"./_generated/component.js": {
+			"types": "./dist/component/_generated/component.d.ts"
+		},
+		"./_generated/component": {
+			"types": "./dist/component/_generated/component.d.ts"
+		},
+		"./convex.config.js": {
+			"types": "./dist/component/convex.config.d.ts",
+			"default": "./dist/component/convex.config.js"
+		},
+		"./convex.config": {
+			"types": "./dist/component/convex.config.d.ts",
+			"default": "./dist/component/convex.config.js"
+		}
+	},
+	"peerDependencies": {
+		"convex": "^1.17.0"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.0.0",
+		"@edge-runtime/vm": "^5.0.0",
+		"@types/node": "^25.2.1",
+		"chokidar-cli": "^3.0.0",
+		"convex": "^1.17.0",
+		"convex-test": "^0.0.34",
+		"npm-run-all2": "^7.0.0",
+		"path-exists-cli": "^2.0.0",
+		"typescript": "~5.7.0",
+		"vitest": "^3.0.0"
+	}
+}

@@ -1,106 +1,59 @@
+# CLAUDE.md — Convex Jina AI Component
 
-Default to using Bun instead of Node.js.
+## Project Context
+Building a **Convex Component** wrapping Jina AI's Reader and Search APIs for the **Convex Components Authoring Challenge** (Third-Party Sync category).
 
-- Use `bun <file>` instead of `node <file>` or `ts-node <file>`
-- Use `bun test` instead of `jest` or `vitest`
-- Use `bun build <file.html|file.ts|file.css>` instead of `webpack` or `esbuild`
-- Use `bun install` instead of `npm install` or `yarn install` or `pnpm install`
-- Use `bun run <script>` instead of `npm run <script>` or `yarn run <script>` or `pnpm run <script>`
-- Use `bunx <package> <command>` instead of `npx <package> <command>`
-- Bun automatically loads .env, so don't use dotenv.
+This must be **production-ready, professionally built, and submission-quality**.
 
-## APIs
+## Critical Rules — NEVER Violate
+- **TypeScript only** — never plain JavaScript
+- **Bun** as package manager — never npm/npx/yarn/pnpm
+- **Biome** for linting/formatting — never ESLint/Prettier
+- **NEVER commit secrets** — all API keys via environment variables
+- **NEVER use `@anthropic` namespace** — package name is `convex-jina`
+- **Follow Convex component conventions EXACTLY** — study the official template
 
-- `Bun.serve()` supports WebSockets, HTTPS, and routes. Don't use `express`.
-- `bun:sqlite` for SQLite. Don't use `better-sqlite3`.
-- `Bun.redis` for Redis. Don't use `ioredis`.
-- `Bun.sql` for Postgres. Don't use `pg` or `postgres.js`.
-- `WebSocket` is built-in. Don't use `ws`.
-- Prefer `Bun.file` over `node:fs`'s readFile/writeFile
-- Bun.$`ls` instead of execa.
+## Convex Component Conventions
+- Start from `npx create-convex@latest --component` template structure
+- `src/component/` — isolated sandboxed code (cannot access process.env)
+- `src/client/` — runs in app context (CAN access process.env)
+- `src/react/` — React hooks (optional but recommended)
+- `example/` — working demo app
+- `convex.json` points to `example/convex`
+- All public functions MUST have argument AND return validators
+- Component cannot access `ctx.auth` — pass userId explicitly
+- API keys flow: process.env → client class → action args → component
+- Use class-based client pattern (like @convex-dev/agent, @convex-dev/rag)
+- Package exports must follow canonical pattern (see plan)
 
-## Testing
+## Jina AI APIs
+- **Reader**: POST https://r.jina.ai/ with `{ "url": "..." }` — returns clean markdown
+- **Search**: POST https://s.jina.ai/ with `{ "q": "..." }` — returns structured results
+- Both use `Authorization: Bearer {JINA_API_KEY}` and `Accept: application/json`
+- Both return token usage in response
 
-Use `bun test` to run tests.
+## Architecture Decisions
+- 3 schema tables: `readerCache`, `searchCache`, `usage`
+- Class-based `JinaAI` client + `exposeApi()` helper
+- Built-in caching with configurable TTL
+- Usage tracking per operation
+- Retry logic with exponential backoff
+- Support both read and search in one component (dual API = differentiator)
 
-```ts#index.test.ts
-import { test, expect } from "bun:test";
+## Package Details
+- **Name**: `convex-jina` (npm)
+- **License**: Apache-2.0
+- **GitHub**: github.com/adhishthite/convex-jina
 
-test("hello world", () => {
-  expect(1).toBe(1);
-});
-```
+## Quality Standards
+- Every function has proper validators (args + returns)
+- Comprehensive error handling
+- Clean, documented types exported
+- README with usage examples, API reference
+- Tests with vitest + convex-test
+- CI-ready (typecheck, lint, test)
 
-## Frontend
+## Learnings & Mistakes Log
+(Update this as you work — track what went wrong and what was corrected)
 
-Use HTML imports with `Bun.serve()`. Don't use `vite`. HTML imports fully support React, CSS, Tailwind.
-
-Server:
-
-```ts#index.ts
-import index from "./index.html"
-
-Bun.serve({
-  routes: {
-    "/": index,
-    "/api/users/:id": {
-      GET: (req) => {
-        return new Response(JSON.stringify({ id: req.params.id }));
-      },
-    },
-  },
-  // optional websocket support
-  websocket: {
-    open: (ws) => {
-      ws.send("Hello, world!");
-    },
-    message: (ws, message) => {
-      ws.send(message);
-    },
-    close: (ws) => {
-      // handle close
-    }
-  },
-  development: {
-    hmr: true,
-    console: true,
-  }
-})
-```
-
-HTML files can import .tsx, .jsx or .js files directly and Bun's bundler will transpile & bundle automatically. `<link>` tags can point to stylesheets and Bun's CSS bundler will bundle.
-
-```html#index.html
-<html>
-  <body>
-    <h1>Hello, world!</h1>
-    <script type="module" src="./frontend.tsx"></script>
-  </body>
-</html>
-```
-
-With the following `frontend.tsx`:
-
-```tsx#frontend.tsx
-import React from "react";
-import { createRoot } from "react-dom/client";
-
-// import .css files directly and it works
-import './index.css';
-
-const root = createRoot(document.body);
-
-export default function Frontend() {
-  return <h1>Hello, world!</h1>;
-}
-
-root.render(<Frontend />);
-```
-
-Then, run index.ts
-
-```sh
-bun --hot ./index.ts
-```
-
-For more information, read the Bun API docs in `node_modules/bun-types/docs/**.mdx`.
+- Session 1: Starting fresh from official template

@@ -48,12 +48,22 @@ app.use(jina);
 export default app;
 ```
 
-### 2. Set your Jina API key
+### 2. Configure your Jina API key
 
 Get a free API key from [jina.ai](https://jina.ai/api) (1M tokens/month free tier).
 
+You can provide the key via environment variable (server-side):
+
 ```bash
 npx convex env set JINA_API_KEY your_api_key_here
+```
+
+Or pass it explicitly per request (useful for user-provided keys):
+
+```ts
+const jina = new JinaAI(components.jina, {
+  JINA_API_KEY: userProvidedKey,
+});
 ```
 
 ### 3. Use the client in your Convex functions
@@ -312,18 +322,23 @@ bun run test
 
 ## Demo App
 
-The `example/` directory contains a working demo app with:
+Try the live demo: [convex-jina-demo.vercel.app](https://convex-jina-demo.vercel.app)
+
+You will need your own Jina AI API key to use the demo. Get one for free at [jina.ai/api](https://jina.ai/api) (1M tokens/month on the free tier). The key is entered in the browser and stored in localStorage - it is never saved on the server.
+
+The `example/` directory contains the demo source with:
+- API Key input with localStorage persistence
 - URL Reader - input a URL, see extracted markdown
 - Web Search - search the web, see structured results
 - Usage Dashboard - monitor token consumption
 
-To run:
+To run locally:
 ```bash
 bun install
 bun run dev
 ```
 
-Then open `http://localhost:5173` and set your `JINA_API_KEY` in the Convex dashboard.
+Then open `http://localhost:5173` and enter your Jina API key in the UI.
 
 ## License
 

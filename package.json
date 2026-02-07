@@ -1,5 +1,5 @@
 {
-  "name": "@anthropic/convex-jina",
+  "name": "@adhishthite/convex-jina",
   "version": "0.1.0",
   "description": "Convex component for Jina AI Reader and Search APIs",
   "type": "module",

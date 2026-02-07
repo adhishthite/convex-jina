@@ -79,7 +79,7 @@ export interface JinaComponentApi {
  * @example
  * ```typescript
  * import { api } from "./_generated/api";
- * import { createJinaClient } from "@anthropic/convex-jina";
+ * import { createJinaClient } from "@adhishthite/convex-jina";
  *
  * // In your Convex function
  * const jina = createJinaClient(components.jina);

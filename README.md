@@ -1,4 +1,4 @@
-# @anthropic/convex-jina
+# convex-jina
 
 A Convex component for integrating Jina AI's Reader and Search APIs into your Convex application.
 
@@ -13,13 +13,13 @@ A Convex component for integrating Jina AI's Reader and Search APIs into your Co
 ## Installation
 
 ```bash
-bun add @anthropic/convex-jina
+bun add @adhishthite/convex-jina
 ```
 
 Or with npm:
 
 ```bash
-npm install @anthropic/convex-jina
+npm install @adhishthite/convex-jina
 ```
 
 ## Setup
@@ -30,7 +30,7 @@ Create or update your `convex/convex.config.ts`:
 
 ```typescript
 import { defineApp } from "convex/server";
-import jina from "@anthropic/convex-jina/convex.config";
+import jina from "@adhishthite/convex-jina/convex.config";
 
 const app = defineApp();
 app.use(jina);
@@ -157,7 +157,7 @@ interface SearchResultItem {
 The component throws `JinaApiError` for API-related errors:
 
 ```typescript
-import { JinaApiError } from "@anthropic/convex-jina";
+import { JinaApiError } from "@adhishthite/convex-jina";
 
 try {
   const result = await ctx.runAction(components.jina.reader.read, {

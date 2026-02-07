@@ -1,6 +1,6 @@
 # Convex Jina Example
 
-Example Convex application demonstrating the `@anthropic/convex-jina` component.
+Example Convex application demonstrating the `@adhishthite/convex-jina` component.
 
 ## Setup
 

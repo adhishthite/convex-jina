@@ -1,0 +1,51 @@
+{
+  "name": "@anthropic/convex-jina",
+  "version": "0.1.0",
+  "description": "Convex component for Jina AI Reader and Search APIs",
+  "type": "module",
+  "main": "./dist/client/index.js",
+  "types": "./dist/client/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/client/index.d.ts",
+      "import": "./dist/client/index.js"
+    },
+    "./convex.config": {
+      "types": "./dist/component/convex.config.d.ts",
+      "import": "./dist/component/convex.config.js"
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "dev": "tsc -p tsconfig.build.json --watch",
+    "format": "biome format --write .",
+    "lint": "biome lint --write .",
+    "check": "biome check --write .",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "bun run build"
+  },
+  "keywords": [
+    "convex",
+    "jina",
+    "ai",
+    "reader",
+    "search",
+    "web-scraping",
+    "component"
+  ],
+  "author": "",
+  "license": "MIT",
+  "peerDependencies": {
+    "convex": "^1.17.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.14",
+    "@types/bun": "latest",
+    "convex": "^1.31.7",
+    "typescript": "^5.9.3"
+  }
+}

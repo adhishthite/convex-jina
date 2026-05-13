@@ -4,107 +4,164 @@ import type {
 	GenericMutationCtx,
 	GenericQueryCtx,
 } from "convex/server";
+import type { Infer } from "convex/values";
+import { v } from "convex/values";
 
 // --- Types ---
 
-export type ReaderOptions = {
-	noCache?: boolean;
-	targetSelector?: string;
-	removeSelector?: string;
-	waitForSelector?: string;
-	withLinksSummary?: boolean;
-	withImagesSummary?: boolean;
-	timeout?: number;
-	tokenBudget?: number;
-	engine?: string;
-	useReaderLM?: boolean;
-	retainImages?: boolean;
-};
+export const vReaderOptions = v.object({
+	noCache: v.optional(v.boolean()),
+	targetSelector: v.optional(v.string()),
+	removeSelector: v.optional(v.string()),
+	waitForSelector: v.optional(v.string()),
+	withLinksSummary: v.optional(v.boolean()),
+	withImagesSummary: v.optional(v.boolean()),
+	timeout: v.optional(v.number()),
+	tokenBudget: v.optional(v.number()),
+	engine: v.optional(v.string()),
+	useReaderLM: v.optional(v.boolean()),
+	retainImages: v.optional(v.boolean()),
+});
 
-export type SearchOptions = {
-	noCache?: boolean;
-	withLinksSummary?: boolean;
-	withImagesSummary?: boolean;
-	timeout?: number;
-	engine?: string;
-};
+export type ReaderOptions = Infer<typeof vReaderOptions>;
 
-export type ReadArgs = {
-	url: string;
-	contentFormat?: "markdown" | "html" | "text";
-	options?: ReaderOptions;
-	cacheTtlMs?: number;
-	userId?: string;
-};
+export const vSearchOptions = v.object({
+	noCache: v.optional(v.boolean()),
+	withLinksSummary: v.optional(v.boolean()),
+	withImagesSummary: v.optional(v.boolean()),
+	timeout: v.optional(v.number()),
+	engine: v.optional(v.string()),
+});
 
-export type SearchArgs = {
-	query: string;
-	site?: string;
-	country?: string;
-	language?: string;
-	numResults?: number;
-	page?: number;
-	options?: SearchOptions;
-	cacheTtlMs?: number;
-	userId?: string;
-};
+export type SearchOptions = Infer<typeof vSearchOptions>;
 
-export type ReadResult = {
-	cacheId: string;
-	status: string;
-	cached: boolean;
-};
+export const vContentFormat = v.union(v.literal("markdown"), v.literal("html"), v.literal("text"));
 
-export type SearchResult = {
-	cacheId: string;
-	status: string;
-	cached: boolean;
-};
+export type ContentFormat = Infer<typeof vContentFormat>;
 
-export type ReaderContent = {
-	_id: string;
-	_creationTime: number;
-	url: string;
-	contentFormat: string;
-	title?: string;
-	description?: string;
-	content: string;
-	images?: any;
-	links?: any;
-	tokensUsed: number;
-	fetchedAt: number;
-	expiresAt: number;
-	status: string;
-	error?: string;
-} | null;
+export const vReadArgs = v.object({
+	url: v.string(),
+	contentFormat: v.optional(vContentFormat),
+	options: v.optional(vReaderOptions),
+	cacheTtlMs: v.optional(v.number()),
+	userId: v.optional(v.string()),
+});
 
-export type SearchResultEntry = {
-	title: string;
-	description: string;
-	url: string;
-	content: string;
-	tokensUsed: number;
-};
+export type ReadArgs = Infer<typeof vReadArgs>;
 
-export type SearchCacheEntry = {
-	_id: string;
-	_creationTime: number;
-	query: string;
-	site?: string;
-	results: SearchResultEntry[];
-	totalTokensUsed: number;
-	fetchedAt: number;
-	expiresAt: number;
-	status: string;
-	error?: string;
-} | null;
+export const vSearchArgs = v.object({
+	query: v.string(),
+	site: v.optional(v.string()),
+	country: v.optional(v.string()),
+	language: v.optional(v.string()),
+	numResults: v.optional(v.number()),
+	page: v.optional(v.number()),
+	options: v.optional(vSearchOptions),
+	cacheTtlMs: v.optional(v.number()),
+	userId: v.optional(v.string()),
+});
 
-export type UsageSummary = {
-	totalTokens: number;
-	readTokens: number;
-	searchTokens: number;
-	operationCount: number;
-};
+export type SearchArgs = Infer<typeof vSearchArgs>;
+
+export const vReadResult = v.object({
+	cacheId: v.string(),
+	status: v.string(),
+	cached: v.boolean(),
+});
+
+export type ReadResult = Infer<typeof vReadResult>;
+
+export const vSearchResult = v.object({
+	cacheId: v.string(),
+	status: v.string(),
+	cached: v.boolean(),
+});
+
+export type SearchResult = Infer<typeof vSearchResult>;
+
+export const vReaderContent = v.union(
+	v.object({
+		_id: v.string(),
+		_creationTime: v.number(),
+		url: v.string(),
+		contentFormat: v.string(),
+		title: v.optional(v.string()),
+		description: v.optional(v.string()),
+		content: v.string(),
+		images: v.optional(v.any()),
+		links: v.optional(v.any()),
+		tokensUsed: v.number(),
+		fetchedAt: v.number(),
+		expiresAt: v.number(),
+		status: v.string(),
+		error: v.optional(v.string()),
+	}),
+	v.null(),
+);
+
+export type ReaderContent = Infer<typeof vReaderContent>;
+
+export const vSearchResultEntry = v.object({
+	title: v.string(),
+	description: v.string(),
+	url: v.string(),
+	content: v.string(),
+	tokensUsed: v.number(),
+});
+
+export type SearchResultEntry = Infer<typeof vSearchResultEntry>;
+
+export const vSearchCacheEntry = v.union(
+	v.object({
+		_id: v.string(),
+		_creationTime: v.number(),
+		query: v.string(),
+		site: v.optional(v.string()),
+		results: v.array(vSearchResultEntry),
+		totalTokensUsed: v.number(),
+		fetchedAt: v.number(),
+		expiresAt: v.number(),
+		status: v.string(),
+		error: v.optional(v.string()),
+	}),
+	v.null(),
+);
+
+export type SearchCacheEntry = Infer<typeof vSearchCacheEntry>;
+
+export const vUsageArgs = v.object({
+	userId: v.optional(v.string()),
+	since: v.optional(v.number()),
+});
+
+export type UsageArgs = Infer<typeof vUsageArgs>;
+
+export const vUsageSummary = v.object({
+	totalTokens: v.number(),
+	readTokens: v.number(),
+	searchTokens: v.number(),
+	operationCount: v.number(),
+});
+
+export type UsageSummary = Infer<typeof vUsageSummary>;
+
+export const vGetByCacheIdArgs = v.object({
+	cacheId: v.string(),
+});
+
+export type GetByCacheIdArgs = Infer<typeof vGetByCacheIdArgs>;
+
+export const vInvalidateReaderArgs = v.object({
+	url: v.string(),
+});
+
+export type InvalidateReaderArgs = Infer<typeof vInvalidateReaderArgs>;
+
+export const vInvalidateSearchArgs = v.object({
+	query: v.string(),
+});
+
+export type InvalidateSearchArgs = Infer<typeof vInvalidateSearchArgs>;
 
 // --- Context type helpers ---
 
@@ -150,7 +207,7 @@ export class JinaAI {
 	 * Get cached reader content by cache ID.
 	 * Reactive: updates automatically when the read completes.
 	 */
-	async getReaderContent(ctx: QueryCtx, args: { cacheId: string }): Promise<ReaderContent> {
+	async getReaderContent(ctx: QueryCtx, args: GetByCacheIdArgs): Promise<ReaderContent> {
 		return await ctx.runQuery(this.component.cache.getReaderContent, {
 			cacheId: args.cacheId,
 		});
@@ -179,7 +236,7 @@ export class JinaAI {
 	 * Get cached search results by cache ID.
 	 * Reactive: updates automatically when the search completes.
 	 */
-	async getSearchResults(ctx: QueryCtx, args: { cacheId: string }): Promise<SearchCacheEntry> {
+	async getSearchResults(ctx: QueryCtx, args: GetByCacheIdArgs): Promise<SearchCacheEntry> {
 		return await ctx.runQuery(this.component.cache.getSearchResults, {
 			cacheId: args.cacheId,
 		});
@@ -188,7 +245,7 @@ export class JinaAI {
 	/**
 	 * Get usage statistics (total tokens, operation counts).
 	 */
-	async getUsage(ctx: QueryCtx, args?: { userId?: string; since?: number }): Promise<UsageSummary> {
+	async getUsage(ctx: QueryCtx, args?: UsageArgs): Promise<UsageSummary> {
 		return await ctx.runQuery(this.component.usage.getUsage, args ?? {});
 	}
 
@@ -196,7 +253,7 @@ export class JinaAI {
 	 * Invalidate cached reader content for a URL.
 	 * Returns the number of cache entries removed.
 	 */
-	async invalidateReader(ctx: MutationCtx, args: { url: string }): Promise<number> {
+	async invalidateReader(ctx: MutationCtx, args: InvalidateReaderArgs): Promise<number> {
 		return await ctx.runMutation(this.component.cache.invalidateReaderCache, {
 			url: args.url,
 		});
@@ -206,7 +263,7 @@ export class JinaAI {
 	 * Invalidate cached search results for a query.
 	 * Returns the number of cache entries removed.
 	 */
-	async invalidateSearch(ctx: MutationCtx, args: { query: string }): Promise<number> {
+	async invalidateSearch(ctx: MutationCtx, args: InvalidateSearchArgs): Promise<number> {
 		return await ctx.runMutation(this.component.cache.invalidateSearchCache, {
 			query: args.query,
 		});

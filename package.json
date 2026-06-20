@@ -69,15 +69,15 @@
 		}
 	},
 	"peerDependencies": {
-		"convex": "^1.17.0"
+		"convex": "^1.24.8"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.0.0",
 		"@edge-runtime/vm": "^5.0.0",
 		"@types/node": "^25.2.1",
 		"chokidar-cli": "^3.0.0",
-		"convex": "^1.17.0",
-		"convex-test": "^0.0.34",
+		"convex": "^1.41.0",
+		"convex-test": "^0.0.53",
 		"npm-run-all2": "^7.0.0",
 		"path-exists-cli": "^2.0.0",
 		"typescript": "~5.7.0",

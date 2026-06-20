@@ -1,9 +1,4 @@
-import type {
-	GenericActionCtx,
-	GenericDataModel,
-	GenericMutationCtx,
-	GenericQueryCtx,
-} from "convex/server";
+import type { GenericActionCtx, GenericDataModel, GenericMutationCtx } from "convex/server";
 
 // --- Types ---
 
@@ -108,7 +103,13 @@ export type UsageSummary = {
 
 // --- Context type helpers ---
 
-type QueryCtx = Pick<GenericQueryCtx<GenericDataModel>, "runQuery">;
+// Note: read-only/query helpers are typed against GenericActionCtx["runQuery"]
+// rather than GenericQueryCtx["runQuery"]. As of convex@1.41, the query ctx's
+// runQuery gained a `transactionLimits` options parameter that makes a real
+// query ctx incompatible with Pick<GenericQueryCtx, "runQuery">. The action
+// ctx's runQuery keeps the simpler signature accepted by both query and action
+// contexts, so callers can pass either.
+type QueryCtx = Pick<GenericActionCtx<GenericDataModel>, "runQuery">;
 type MutationCtx = Pick<GenericMutationCtx<GenericDataModel>, "runQuery" | "runMutation">;
 type ActionCtx = Pick<GenericActionCtx<GenericDataModel>, "runQuery" | "runMutation" | "runAction">;
 
